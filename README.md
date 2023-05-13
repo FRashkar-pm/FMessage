@@ -1,6 +1,7 @@
 <p align="center">
   A simple plugin to create custom messages on your server
 </p>
+
 ## Config
 <p align="center">
   You can customize the message as you like
