@@ -7,6 +7,12 @@
   You can customize the message as you like
 </p>
 
+## Config Tag's
+- {name} => Player Names
+- {online} => Current Player
+- {max-players} => Max Players
+- {killer} => Killer Player Names
+
 ```yaml
 join-message: "[+] {name}"
 quit-message: "[-] {name}"
