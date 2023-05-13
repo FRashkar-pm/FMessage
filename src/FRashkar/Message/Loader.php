@@ -126,15 +126,8 @@ class Loader extends PluginBase implements Listener
         $wlmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getUsername(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $wlmsg);
         $sfmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getUsername(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $sfmsg);
         $banmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getUsername(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $banmsg);
-        if($ev->getKickReasons() == PlayerPreLoginEvent::KICK_REASON_SERVER_WHITELISTED)
-        {
-            $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_WHITELISTED, $wlmsg);
-        }elseif($ev->getKickReasons() == PlayerPreLoginEvent::KICK_REASON_SERVER_FULL)
-        {
-            $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_FULL, $sfmsg);
-        }elseif($ev->getKickReasons() == PlayerPreLoginEvent::KICK_REASON_BANNED)
-        {
-            $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_BANNED, $banmsg);
-        }
+        $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_WHITELISTED, $wlmsg);
+        $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_FULL, $sfmsg);
+        $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_BANNED, $banmsg);
     }
 }
