@@ -17,12 +17,11 @@
 namespace FRashkar\Message;
 
 use pocketmine\event\Listener;
-use pocketmine\event\player\{PlayerJoinEvent, PlayerDeathEvent, PlayerQuitEvent};
+use pocketmine\event\player\{PlayerJoinEvent, PlayerDeathEvent, PlayerQuitEvent, PlayerPreLoginEvent};
 use pocketmine\plugin\PluginBase;
 
 class Loader extends PluginBase implements Listener
 {
-
     /** @var string */
     public $joinmsg;
 
@@ -31,6 +30,15 @@ class Loader extends PluginBase implements Listener
 
     /** @var string */
     public $deathmsg;
+
+    /** @var string */
+    public $wlmsg;
+
+    /** @var string */
+    public $sfmsg;
+
+    /** @var string */
+    public $banmsg;
 
     public function onLoad(): void
     {
@@ -67,5 +75,27 @@ class Loader extends PluginBase implements Listener
         $deathmsg = $this->getConfig()->get("death-message");
         $deathmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $deathmsg);
         $ev->setDeathMessage($deathmsg);
+    }
+
+    public function onPreLogin(PlayerPreLoginEvent $ev)
+    {
+        $info = $this->getServer()->getQueryInformation();
+        $wlmsg = $this->getConfig()->get("whitelist-message");
+        $sfmsg = $this->getConfig()->get("serverfull-message");
+        $banmsg = $this->getConfig()->get("banned-message");
+        $wlmsg = str_replace(["{online}", "{max-players}"], [$info->getPlayerCount(), $info->getMaxPlayerCount(), $wlmsg]);
+        $sfmsg = str_replace(["{online}", "{max-players}"], [$info->getPlayerCount(), $info->getMaxPlayerCount(), $sfmsg]);
+        $banmsg = str_replace(["{online}", "{max-players}"], [$info->getPlayerCount(), $info->getMaxPlayerCount(), $banmsg]);
+        $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_WHITELISTED, $msg);
+        if($ev->getKickReasons() == PlayerPreLoginEvent::KICK_REASON_SERVER_WHITELISTED)
+        {
+            $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_WHITELISTED, $wlmsg);
+        }elseif($ev->getKickReasons() == PlayerPreLoginEvent::KICK_REASON_SERVER_FULL)
+        {
+            $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_FULL, $sfmsg);
+        }elseif($ev->getKickReasons() == PlayerPreLoginEvent::KICK_REASON_BANNED)
+        {
+            $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_BANNED, $banmsg);
+        }
     }
 }

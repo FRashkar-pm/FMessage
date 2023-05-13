@@ -7,3 +7,6 @@
 join-message: "[+] {name}"
 quit-message: "[-] {name}"
 death-message: "{name} Death"
+whitelist-message: "Sorry you are not white listed {online}/{max-players}"
+serverfull-message: "Server is full! {online}/{max-players}"
+banned-message: "You have been banned!"
