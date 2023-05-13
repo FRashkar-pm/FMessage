@@ -68,7 +68,7 @@ class Loader extends PluginBase implements Listener
         $exbmsg = $this->getConfig()->get("death-block-message");
         $exemsg = $this->getConfig()->get("death-entity-message");
         
-        if($cause instanceof EntityDamageEvent::CAUSE_FALL)
+        if($cause == EntityDamageEvent::CAUSE_FALL)
         {
             $fallmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $fallmsg);
             $ev->setDeathMessage($fallmsg);
@@ -82,32 +82,32 @@ class Loader extends PluginBase implements Listener
                 $ev->setDeathMessage($killmsg);
             }
         }
-        elseif($cause instanceof EntityDamageEvent::CAUSE_VOID)
+        elseif($cause == EntityDamageEvent::CAUSE_VOID)
         {
             $voidmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $voidmsg);
             $ev->setDeathMessage($voidmsg);
         }
-        elseif($cause instanceof EntityDamageEvent::CAUSE_SUFFOCATION)
+        elseif($cause == EntityDamageEvent::CAUSE_SUFFOCATION)
         {
             $sfcmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $sfcmsg);
             $ev->setDeathMessage($sfcmsg);
         }
-        elseif($cause instanceof EntityDamageEvent::CAUSE_LAVA)
+        elseif($cause == EntityDamageEvent::CAUSE_LAVA)
         {
             $lavamsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $lavamsg);
             $ev->setDeathMessage($lavamsg);
         }
-        elseif($cause instanceof EntityDamageEvent::CAUSE_DROWNING)
+        elseif($cause == EntityDamageEvent::CAUSE_DROWNING)
         {
             $drownmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $drownmsg);
             $ev->setDeathMessage($drownmsg);
         }
-        elseif($cause instanceof EntityDamageEvent::CAUSE_BLOCK_EXPLOSION)
+        elseif($cause == EntityDamageEvent::CAUSE_BLOCK_EXPLOSION)
         {
             $exbmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $exbmsg);
             $ev->setDeathMessage($exbmsg);
         }
-        elseif($cause instanceof EntityDamageEvent::CAUSE_ENTITY_EXPLOSION)
+        elseif($cause == EntityDamageEvent::CAUSE_ENTITY_EXPLOSION)
         {
             $exemsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $exemsg);
             $ev->setDeathMessage($exemsg);
