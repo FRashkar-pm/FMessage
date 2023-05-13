@@ -5,6 +5,7 @@
 <p align="center">
   You can customize the message as you like
 </p>
+
 ```yaml
 join-message: "[+] {name}"
 quit-message: "[-] {name}"
@@ -21,5 +22,6 @@ death-drown-message: "{name} drowned"
 death-block-explosion: "{name} hit by an block explosion"
 death-entity-explosion: "{name} hit by an entity explosion"
 ```
+
 ## Credits
 <a target="_blank" href="https://icons8.com/icon/116714/chat-bubble">Message</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
