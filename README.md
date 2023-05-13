@@ -10,7 +10,7 @@
 ## Config Tag's
 - {name} => Player Names
 - {online} => Current Player
-- {max-players} => Max Players
+- {max-players} => Max Server Players
 - {killer} => Killer Player Names
 
 ```yaml
