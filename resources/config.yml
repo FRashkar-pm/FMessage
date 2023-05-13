@@ -6,3 +6,4 @@
 
 join-message: "[+] {name}"
 quit-message: "[-] {name}"
+death-message: "{name} Death"
