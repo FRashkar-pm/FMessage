@@ -3,10 +3,19 @@
 # {name} => Player Names
 # {online} => Current Player
 # {max-players} => Max Players
+# {killer} => Killer Player Names
 
 join-message: "[+] {name}"
 quit-message: "[-] {name}"
 death-message: "{name} Death"
-whitelist-message: "Sorry you are not white listed {online}/{max-players}"
-serverfull-message: "Server is full! {online}/{max-players}"
+whitelist-message: "Sorry {name}, you are not white listed {online}/{max-players}"
+serverfull-message: "Sorry {name}, Server is full! {online}/{max-players}"
 banned-message: "You have been banned!"
+death-fall-message: "{name} death by fall"
+death-kill-message: "{name} killed by {killer}"
+death-void-message: "{name} death by void"
+death-suffocation-message: "{name} stuck in the wall"
+death-lava-message: "{name} death by lava"
+death-drown-message: "{name} drowned"
+death-block-explosion: "{name} hit by an block explosion"
+death-entity-explosion: "{name} hit by an entity explosion"

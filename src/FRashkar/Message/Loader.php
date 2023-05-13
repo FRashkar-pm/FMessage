@@ -16,30 +16,14 @@
 
 namespace FRashkar\Message;
 
+use pocketmine\event\entity\{EntityDamageEvent, EntityDamageByEntityEvent};
 use pocketmine\event\Listener;
 use pocketmine\event\player\{PlayerJoinEvent, PlayerDeathEvent, PlayerQuitEvent, PlayerPreLoginEvent};
+use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 
 class Loader extends PluginBase implements Listener
 {
-    /** @var string */
-    public $joinmsg;
-
-    /** @var string */
-    public $quitmsg;
-
-    /** @var string */
-    public $deathmsg;
-
-    /** @var string */
-    public $wlmsg;
-
-    /** @var string */
-    public $sfmsg;
-
-    /** @var string */
-    public $banmsg;
-
     public function onLoad(): void
     {
         $this->saveDefaultConfig();
@@ -72,20 +56,67 @@ class Loader extends PluginBase implements Listener
     {
         $info = $this->getServer()->getQueryInformation();
         $player = $ev->getPlayer();
+        $cause = $player->getLastDamageCause();
         $deathmsg = $this->getConfig()->get("death-message");
         $deathmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $deathmsg);
+        $fallmsg = $this->getConfig()->get("death-fall-message");
+        $killmsg = $this->getConfig()->get("death-kill-message");
+        $voidmsg = $this->getConfig()->get("death-void-message");
+        $sfcmsg = $this->getConfig()->get("death-suffocation-message");
+        $lavamsg = $this->getConfig()->get("death-lava-message");
+        $drownmsg = $this->getConfig()->get("death-drown-message");
+        $exbmsg = $this->getConfig()->get("death-block-message");
+        $exemsg = $this->getConfig()->get("death-entity-message");
+        if($cause instanceof EntityDamageEvent::CAUSE_FALL)
+        {
+            $fallmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $fallmsg);
+            $ev->setDeathMessage($fallmsg);
+        }elseif($cause instanceof EntityDamageByEntityEvent)
+        {
+            $killer = $cause->getDamager();
+            if($killer instanceof Player)
+            {
+                $killmsg = str_replace(["{name}", "{online}", "{max-players}", "{killer}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount(), $killer->getName()], $killmsg);
+                $ev->setDeathMessage($killmsg);
+            }
+        }elseif($cause instanceof EntityDamageEvent::CAUSE_VOID)
+        {
+            $voidmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $voidmsg);
+            $ev->setDeathMessage($voidmsg);
+        }elseif($cause instanceof EntityDamageEvent::CAUSE_SUFFOCATION)
+        {
+            $sfcmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $sfcmsg);
+            $ev->setDeathMessage($sfcmsg);
+        }elseif($cause instanceof EntityDamageEvent::CAUSE_LAVA)
+        {
+            $lavamsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $lavamsg);
+            $ev->setDeathMessage($lavamsg);
+        }elseif($cause instanceof EntityDamageEvent::CAUSE_DROWNING)
+        {
+            $drownmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $drownmsg);
+            $ev->setDeathMessage($drownmsg);
+        }elseif($cause instanceof EntityDamageEvent::CAUSE_BLOCK_EXPLOSION)
+        {
+            $exbmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $exbmsg);
+            $ev->setDeathMessage($exbmsg);
+        }elseif($cause instanceof EntityDamageEvent::CAUSE_ENTITY_EXPLOSION)
+        {
+            $exemsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $exemsg);
+            $ev->setDeathMessage($exemsg);
+        }
         $ev->setDeathMessage($deathmsg);
     }
 
     public function onPreLogin(PlayerPreLoginEvent $ev)
     {
+        $player = $ev->getPlayer();
         $info = $this->getServer()->getQueryInformation();
         $wlmsg = $this->getConfig()->get("whitelist-message");
         $sfmsg = $this->getConfig()->get("serverfull-message");
         $banmsg = $this->getConfig()->get("banned-message");
-        $wlmsg = str_replace(["{online}", "{max-players}"], [$info->getPlayerCount(), $info->getMaxPlayerCount(), $wlmsg]);
-        $sfmsg = str_replace(["{online}", "{max-players}"], [$info->getPlayerCount(), $info->getMaxPlayerCount(), $sfmsg]);
-        $banmsg = str_replace(["{online}", "{max-players}"], [$info->getPlayerCount(), $info->getMaxPlayerCount(), $banmsg]);
+        $wlmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount(), $wlmsg]);
+        $sfmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount(), $sfmsg]);
+        $banmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount(), $banmsg]);
         $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_WHITELISTED, $msg);
         if($ev->getKickReasons() == PlayerPreLoginEvent::KICK_REASON_SERVER_WHITELISTED)
         {
