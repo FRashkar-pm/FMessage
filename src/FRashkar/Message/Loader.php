@@ -123,20 +123,19 @@ class Loader extends PluginBase implements Listener
         $wlmsg = $this->getConfig()->get("whitelist-message");
         $sfmsg = $this->getConfig()->get("serverfull-message");
         $banmsg = $this->getConfig()->get("banned-message");
-        $wlmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getUsername(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $wlmsg);
-        $sfmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getUsername(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $sfmsg);
-        $banmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getUsername(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $banmsg);
-        if(!$this->getServer()->isWhitelisted($player->getUsername()))
+        $wlmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount(), $wlmsg]);
+        $sfmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount(), $sfmsg]);
+        $banmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount(), $banmsg]);
+        $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_WHITELISTED, $msg);
+        if($ev->getKickReasons() == PlayerPreLoginEvent::KICK_REASON_SERVER_WHITELISTED)
         {
             $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_WHITELISTED, $wlmsg);
-        }
-        elseif($info->getPlayerCount() == $info->getMaxPlayerCount())
+        }elseif($ev->getKickReasons() == PlayerPreLoginEvent::KICK_REASON_SERVER_FULL)
         {
             $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_FULL, $sfmsg);
-        }
-        elseif($this->getNameBans()->isBanned($player->getUsername()))
+        }elseif($ev->getKickReasons() == PlayerPreLoginEvent::KICK_REASON_BANNED)
         {
             $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_BANNED, $banmsg);
-        }   
+        }
     }
 }
