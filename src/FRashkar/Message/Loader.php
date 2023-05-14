@@ -135,7 +135,7 @@ class Loader extends PluginBase implements Listener
         {
             $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_FULL, $sfmsg);
         }
-        elseif($this->getNameBans()->isBanned($player->getUsername()))
+        elseif($this->getServer()->getNameBans()->isBanned($player->getUsername()))
         {
             $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_BANNED, $banmsg);
         }   
