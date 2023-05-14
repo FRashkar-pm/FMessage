@@ -19,6 +19,7 @@ namespace FRashkar\Message;
 use pocketmine\event\entity\{EntityDamageEvent, EntityDamageByEntityEvent};
 use pocketmine\event\Listener;
 use pocketmine\event\player\{PlayerJoinEvent, PlayerDeathEvent, PlayerQuitEvent, PlayerPreLoginEvent};
+use pocketmine\permission\BanList;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 
