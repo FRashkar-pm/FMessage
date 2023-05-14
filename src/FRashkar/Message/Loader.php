@@ -57,6 +57,7 @@ class Loader extends PluginBase implements Listener
         $info = $this->getServer()->getQueryInformation();
         $player = $ev->getPlayer();
         $cause = $player->getLastDamageCause();
+        $source = $cause->getCause();
         $deathmsg = $this->getConfig()->get("death-message");
         $deathmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $deathmsg);
         $fallmsg = $this->getConfig()->get("death-fall-message");
@@ -67,11 +68,13 @@ class Loader extends PluginBase implements Listener
         $drownmsg = $this->getConfig()->get("death-drown-message");
         $exbmsg = $this->getConfig()->get("death-block-message");
         $exemsg = $this->getConfig()->get("death-entity-message");
-        if($cause instanceof EntityDamageEvent::CAUSE_FALL)
+        
+        if($source === EntityDamageEvent::CAUSE_FALL)
         {
             $fallmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $fallmsg);
             $ev->setDeathMessage($fallmsg);
-        }elseif($cause instanceof EntityDamageByEntityEvent)
+        }
+        elseif($cause instanceof EntityDamageByEntityEvent)
         {
             $killer = $cause->getDamager();
             if($killer instanceof Player)
@@ -79,27 +82,33 @@ class Loader extends PluginBase implements Listener
                 $killmsg = str_replace(["{name}", "{online}", "{max-players}", "{killer}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount(), $killer->getName()], $killmsg);
                 $ev->setDeathMessage($killmsg);
             }
-        }elseif($cause instanceof EntityDamageEvent::CAUSE_VOID)
+        }
+        elseif($source === EntityDamageEvent::CAUSE_VOID)
         {
             $voidmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $voidmsg);
             $ev->setDeathMessage($voidmsg);
-        }elseif($cause instanceof EntityDamageEvent::CAUSE_SUFFOCATION)
+        }
+        elseif($source === EntityDamageEvent::CAUSE_SUFFOCATION)
         {
             $sfcmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $sfcmsg);
             $ev->setDeathMessage($sfcmsg);
-        }elseif($cause instanceof EntityDamageEvent::CAUSE_LAVA)
+        }
+        elseif($source === EntityDamageEvent::CAUSE_LAVA)
         {
             $lavamsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $lavamsg);
             $ev->setDeathMessage($lavamsg);
-        }elseif($cause instanceof EntityDamageEvent::CAUSE_DROWNING)
+        }
+        elseif($source === EntityDamageEvent::CAUSE_DROWNING)
         {
             $drownmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $drownmsg);
             $ev->setDeathMessage($drownmsg);
-        }elseif($cause instanceof EntityDamageEvent::CAUSE_BLOCK_EXPLOSION)
+        }
+        elseif($source === EntityDamageEvent::CAUSE_BLOCK_EXPLOSION)
         {
             $exbmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $exbmsg);
             $ev->setDeathMessage($exbmsg);
-        }elseif($cause instanceof EntityDamageEvent::CAUSE_ENTITY_EXPLOSION)
+        }
+        elseif($source === EntityDamageEvent::CAUSE_ENTITY_EXPLOSION)
         {
             $exemsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $exemsg);
             $ev->setDeathMessage($exemsg);
@@ -109,24 +118,25 @@ class Loader extends PluginBase implements Listener
 
     public function onPreLogin(PlayerPreLoginEvent $ev)
     {
-        $player = $ev->getPlayer();
+        $player = $ev->getPlayerInfo();
         $info = $this->getServer()->getQueryInformation();
         $wlmsg = $this->getConfig()->get("whitelist-message");
         $sfmsg = $this->getConfig()->get("serverfull-message");
         $banmsg = $this->getConfig()->get("banned-message");
-        $wlmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount(), $wlmsg]);
-        $sfmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount(), $sfmsg]);
-        $banmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount(), $banmsg]);
-        $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_WHITELISTED, $msg);
-        if($ev->getKickReasons() == PlayerPreLoginEvent::KICK_REASON_SERVER_WHITELISTED)
+        $wlmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getUsername(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $wlmsg);
+        $sfmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getUsername(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $sfmsg);
+        $banmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getUsername(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $banmsg);
+        if(!$this->getServer()->isWhitelisted($player->getUsername()))
         {
             $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_WHITELISTED, $wlmsg);
-        }elseif($ev->getKickReasons() == PlayerPreLoginEvent::KICK_REASON_SERVER_FULL)
+        }
+        elseif($info->getPlayerCount() == $info->getMaxPlayerCount())
         {
             $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_FULL, $sfmsg);
-        }elseif($ev->getKickReasons() == PlayerPreLoginEvent::KICK_REASON_BANNED)
+        }
+        elseif($this->getNameBans()->isBanned($player->getUsername()))
         {
             $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_BANNED, $banmsg);
-        }
+        }   
     }
 }
