@@ -75,7 +75,7 @@ class Loader extends PluginBase implements Listener
             $fallmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $fallmsg);
             $ev->setDeathMessage($fallmsg);
         }
-        elseif($cause instanceof EntityDamageByEntityEvent)
+        if($cause instanceof EntityDamageByEntityEvent)
         {
             $killer = $cause->getDamager();
             if($killer instanceof Player)
@@ -84,37 +84,39 @@ class Loader extends PluginBase implements Listener
                 $ev->setDeathMessage($killmsg);
             }
         }
-        elseif($source === EntityDamageEvent::CAUSE_VOID)
+        if($source === EntityDamageEvent::CAUSE_VOID)
         {
             $voidmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $voidmsg);
             $ev->setDeathMessage($voidmsg);
         }
-        elseif($source === EntityDamageEvent::CAUSE_SUFFOCATION)
+        if($source === EntityDamageEvent::CAUSE_SUFFOCATION)
         {
             $sfcmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $sfcmsg);
             $ev->setDeathMessage($sfcmsg);
         }
-        elseif($source === EntityDamageEvent::CAUSE_LAVA)
+        if($source === EntityDamageEvent::CAUSE_LAVA)
         {
             $lavamsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $lavamsg);
             $ev->setDeathMessage($lavamsg);
         }
-        elseif($source === EntityDamageEvent::CAUSE_DROWNING)
+        if($source === EntityDamageEvent::CAUSE_DROWNING)
         {
             $drownmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $drownmsg);
             $ev->setDeathMessage($drownmsg);
         }
-        elseif($source === EntityDamageEvent::CAUSE_BLOCK_EXPLOSION)
+        if($source === EntityDamageEvent::CAUSE_BLOCK_EXPLOSION)
         {
             $exbmsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $exbmsg);
             $ev->setDeathMessage($exbmsg);
         }
-        elseif($source === EntityDamageEvent::CAUSE_ENTITY_EXPLOSION)
+        if($source === EntityDamageEvent::CAUSE_ENTITY_EXPLOSION)
         {
             $exemsg = str_replace(["{name}", "{online}", "{max-players}"], [$player->getName(), $info->getPlayerCount(), $info->getMaxPlayerCount()], $exemsg);
             $ev->setDeathMessage($exemsg);
+        }else{
+            //default death message
+            $ev->setDeathMessage($deathmsg);
         }
-        $ev->setDeathMessage($deathmsg);
     }
 
     public function onPreLogin(PlayerPreLoginEvent $ev)
@@ -131,11 +133,11 @@ class Loader extends PluginBase implements Listener
         {
             $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_WHITELISTED, $wlmsg);
         }
-        elseif($info->getPlayerCount() == $info->getMaxPlayerCount())
+        if($info->getPlayerCount() > $this->getServer()->getMaxPlayers())
         {
             $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_SERVER_FULL, $sfmsg);
         }
-        elseif($this->getServer()->getNameBans()->isBanned($player->getUsername()))
+        if($this->getServer()->getNameBans()->isBanned($player->getUsername()))
         {
             $ev->setKickReason(PlayerPreLoginEvent::KICK_REASON_BANNED, $banmsg);
         }   
